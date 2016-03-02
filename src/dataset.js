@@ -1,5 +1,7 @@
 'use strict';
 
+import utils from 'utils';
+
 export default class Dataset  {
 
   constructor(dataset) {
@@ -54,7 +56,7 @@ export default class Dataset  {
   /* Return true if the passed value is different from null, undefined and
    * NaN */
   _validValue(value) {
-    return value !== null && value !== undefined && !Number.isNaN(value) &&
+    return value !== null && value !== undefined && !utils.isNaN(value) &&
       !Array.isArray(value) && !(typeof value === 'object');
   }
 

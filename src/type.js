@@ -1,6 +1,7 @@
 'use strict';
 
 import dl from 'datalib';
+import utils from 'utils';
 
 const TYPES = [ 'number', 'integer', 'string', 'date', 'boolean' ];
 
@@ -42,7 +43,7 @@ export default class Type {
   /* Return true if the passed value is different from null, undefined and
    * NaN */
   _validValue(value) {
-    return value !== null && value !== undefined && !Number.isNaN(value);
+    return value !== null && value !== undefined && !utils.isNaN(value);
   }
 
   equals(o) {
