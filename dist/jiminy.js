@@ -80,16 +80,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var Vizz = function () {
-	  function Vizz(json) {
-	    _classCallCheck(this, Vizz);
+	var Jiminy = function () {
+	  function Jiminy(json) {
+	    _classCallCheck(this, Jiminy);
 	
 	    this._dataset = new _dataset2.default(json);
 	    this._fields = new _fields2.default(this._dataset);
 	    this._charts = new _charts2.default(this._fields);
 	  }
 	
-	  _createClass(Vizz, [{
+	  _createClass(Jiminy, [{
 	    key: 'recommendation',
 	    value: function recommendation() {
 	      this._availableCharts = this._charts.getAvailable();
@@ -109,10 +109,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }]);
 	
-	  return Vizz;
+	  return Jiminy;
 	}();
 	
-	exports.default = Vizz;
+	exports.default = Jiminy;
 	;
 	
 	module.exports = exports['default'];

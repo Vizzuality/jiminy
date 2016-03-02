@@ -5,7 +5,7 @@ import Dataset from 'dataset';
 import Fields from 'fields';
 import Charts from 'charts';
 
-export default class Vizz {
+export default class Jiminy {
 
   constructor(json) {
     this._dataset = new Dataset(json);
