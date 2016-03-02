@@ -13,6 +13,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'node_modules/datalib/datalib.min.js',
       'src/*.js',
       'test/*.spec.js'
     ],
@@ -40,7 +41,8 @@ module.exports = function(config) {
       'karma-webpack',
       'karma-mocha',
       'karma-chai',
-      'karma-mocha-reporter'
+      'karma-mocha-reporter',
+      'karma-phantomjs-launcher'
     ],
 
     // test results reporter to use
@@ -63,7 +65,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: [],
+    browsers: ['PhantomJS', 'PhantomJS_custom'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -71,6 +73,19 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
+    concurrency: Infinity,
+
+    customLaunchers: {
+      'PhantomJS_custom': {
+        base: 'PhantomJS',
+        options: {},
+        debug: false
+      }
+    },
+
+    phantomjsLauncher: {
+      // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
+      exitOnResourceError: true
+    }
   });
 };

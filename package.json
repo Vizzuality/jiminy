@@ -26,6 +26,7 @@
     "babel-core": "^6.5.2",
     "babel-eslint": "^5.0.0",
     "babel-loader": "^6.2.3",
+    "babel-polyfill": "^6.6.1",
     "babel-preset-es2015": "^6.5.0",
     "chai": "^3.5.0",
     "eslint": "^2.2.0",
@@ -34,8 +35,10 @@
     "karma-chai": "^0.1.0",
     "karma-mocha": "^0.2.2",
     "karma-mocha-reporter": "^1.2.3",
+    "karma-phantomjs-launcher": "^1.0.0",
     "karma-webpack": "^1.7.0",
     "mocha": "^2.4.5",
+    "phantomjs-prebuilt": "^2.1.4",
     "webpack": "^1.12.14"
   },
   "dependencies": {
