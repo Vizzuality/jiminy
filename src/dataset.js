@@ -29,13 +29,13 @@ export default class Dataset  {
 
   /* Return true if the column contains at least 5 different valid values */
   atLeast5DistinctValues(fieldName) {
-    let values = new Set();
+    let values = [];
 
     for(let i = 0, j = this._data.length; i < j; i++) {
       let value = this._data[i][fieldName];
 
-      if(this._validValue(value)) values.add(value);
-      if(values.size >= 5) return true;
+      if(this._validValue(value) && !~values.indexOf(value)) values.push(value);
+      if(values.length >= 5) return true;
     }
 
     return false;

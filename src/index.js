@@ -1,6 +1,5 @@
 'use strict';
 
-import 'babel-polyfill';
 import Dataset from 'dataset';
 import Fields from 'fields';
 import Charts from 'charts';

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Vizzuality/jiminy.svg?branch=master)](https://travis-ci.org/Vizzuality/jiminy)
 
-Jiminy is a lightweight library, ~2.3 kB (gzipped + minified), whose aim is to infer which type of visualization can be rendered from a dataset. It's only dependency is [Datalib](https://github.com/vega/datalib).
+Jiminy is a lightweight library, ~2.4 kB (gzipped + minified), whose aim is to infer which type of visualization can be rendered from a dataset. It's only dependency is [Datalib](https://github.com/vega/datalib).
 
 ## Installation
 
