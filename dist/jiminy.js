@@ -84,13 +84,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    this._dataset = new _dataset2.default(json);
 	    this._fields = new _fields2.default(this._dataset);
-	    this._charts = new _charts2.default(this._fields);
 	  }
 	
 	  _createClass(Jiminy, [{
 	    key: 'recommendation',
-	    value: function recommendation() {
-	      this._availableCharts = this._charts.getAvailable();
+	
+	
+	    /* If fieldNames is present, only return the charts that can be obtained by
+	     * the combination of the passed column names. Otherwise, return the types of
+	     * charts that can be obtained with any of the columns of the dataset.
+	     * NOTE: if fieldNames is set and contains several names, it won't return the
+	     * charts obtained with just one of the specified columns. */
+	    value: function recommendation(fieldNames) {
+	      var fields = [];
+	      var allColumnsInclusive = false; /* All the columns must be used */
+	
+	      if (fieldNames !== null && fieldNames !== undefined) {
+	        if (!Array.isArray(fieldNames)) {
+	          throw new Error('recommendation should be called without any parameter or with an array of column names.');
+	        } else if (fieldNames.length) {
+	          allColumnsInclusive = true;
+	          fields = this._fields.get(fieldNames);
+	        }
+	      }
+	
+	      if (!fields.length) fields = this._fields.fields;
+	
+	      var options = {
+	        allInclusive: allColumnsInclusive
+	      };
+	
+	      this._availableCharts = new _charts2.default().getAvailable(fields, options);
 	      return this._availableCharts.map(function (chart) {
 	        return chart.name;
 	      });
@@ -279,16 +303,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!dataset || !dataset.valid) {
 	      throw new Error('Fields expects a valid dataset');
 	    } else {
-	      this._fields = this.getFields(dataset);
+	      this._fields = this.computeFields(dataset);
 	    }
 	  }
 	
 	  _createClass(Fields, [{
-	    key: 'getFields',
+	    key: 'computeFields',
 	
 	
 	    /* Return the fields of the dataset */
-	    value: function getFields(dataset) {
+	    value: function computeFields(dataset) {
 	      var columnNames = dataset.getColumnNames();
 	      var fields = [];
 	
@@ -297,6 +321,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	
 	      return fields;
+	    }
+	
+	    /* Return the fields corresponding to each fieldNames. If one can't be found,
+	     * emit a warning in the console. If no one can be found, return an empty
+	     * array. */
+	
+	  }, {
+	    key: 'get',
+	    value: function get(fieldNames) {
+	      var fields = [];
+	
+	      for (var i = 0, j = fieldNames.length; i < j; i++) {
+	        var fieldName = fieldNames[i];
+	        var field = this._getField(fieldName);
+	
+	        if (field) fields.push(field);else console.warn('Unable to find the column "' + fieldName + '" inside the dataset.');
+	      }
+	
+	      return fields;
+	    }
+	
+	    /* Return the field matching the name passed as argument if exist, null
+	     * otherwise */
+	
+	  }, {
+	    key: '_getField',
+	    value: function _getField(fieldName) {
+	      for (var i = 0, j = this._fields.length; i < j; i++) {
+	        if (this.fields[i].name === fieldName) {
+	          return this._fields[i];
+	        }
+	      }
+	
+	      return null;
 	    }
 	  }, {
 	    key: 'fields',
@@ -636,17 +694,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	}];
 	
 	var Charts = function () {
-	  function Charts(fields) {
+	  function Charts() {
 	    _classCallCheck(this, Charts);
 	
 	    this._config = CONFIG;
 	    this._charts = this._createCharts();
-	
-	    if (fields && fields.fields.length > 0) {
-	      this._fields = fields.fields;
-	    } else {
-	      throw new Error('Charts must be instancianted with at least one field.');
-	    }
 	  }
 	
 	  _createClass(Charts, [{
@@ -663,13 +715,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      return charts;
 	    }
+	
+	    /* Return the available charts according to the available fields.
+	     * Options can contain:
+	     *  - allInclusive (boolean): the charts must be computed with all the columns
+	     *    (not just some of them)
+	     */
+	
 	  }, {
 	    key: 'getAvailable',
-	    value: function getAvailable() {
+	    value: function getAvailable(fields, options) {
 	      var available = [];
 	
+	      options = options || {};
+	
+	      if (!fields || !fields.length) {
+	        throw new Error('At least one field is required to compute the available charts.');
+	      }
+	
 	      for (var i = 0, j = this._charts.length; i < j; i++) {
-	        if (this._charts[i].isAvailable(this._fields)) {
+	        var _options = {};
+	
+	        if (_options.allInclusive) _options.allInclusive = true;
+	
+	        if (this._charts[i].isAvailable(fields, _options)) {
 	          available.push(this._charts[i]);
 	        }
 	      }
@@ -719,9 +788,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	    /* Return true if the chart can be rendered depending on the fields available
-	     * and the statistical types required by the chart */
-	    value: function isAvailable(fields) {
+	     * and the statistical types required by the chart
+	     * Options can contain:
+	     *  - allInclusive (boolean): the charts must be computed with all the columns
+	     *    (not just some of them)
+	     */
+	    value: function isAvailable(fields, options) {
 	      var available = false;
+	
+	      options = options || {};
 	
 	      for (var i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
 	        var condition = this._acceptedStatTypes[i];

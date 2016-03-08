@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Vizzuality/jiminy.svg?branch=master)](https://travis-ci.org/Vizzuality/jiminy)
 
-Jiminy is a lightweight library, ~2.4 kB (gzipped + minified), whose aim is to infer which type of visualization can be rendered from a dataset. It's only dependency is [Datalib](https://github.com/vega/datalib).
+Jiminy is a lightweight library, ~2.7 kB (gzipped + minified), whose aim is to infer which type of visualization can be rendered from a dataset. It's only dependency is [Datalib](https://github.com/vega/datalib).
 
 ## Installation
 
@@ -82,9 +82,9 @@ Any other value (`undefined`, `null`, `NaN` or objects or nested arrays) will be
 
 Additionally, the constructor requires at least one non-empty row (ie. one object within the array).
 
-### Jiminy.recommendation()
+### Jiminy.recommendation( [ columnNames ]? )
 
-`Jiminy.recommendation` returns an array of the charts that can be obtained with the dataset you provided to the constructor. The available type of charts are:
+`Jiminy.recommendation` returns an array of the charts that can be obtained with the dataset you provided to the constructor. The available types of charts are:
 - `'bar'`
 - `'line'`
 - `'pie'`
@@ -94,11 +94,19 @@ Additionally, the constructor requires at least one non-empty row (ie. one objec
 
 Some of the possibilities (like `'pie'`) can be the result of a transformation made to a column (for example, grouping it by its values). This happens when only one column is needed to compute the chart.
 
-## FAQ
+If an array of column names is provided, `recommendation` returns only the charts that can be obtained with the combination of all the specified columns. Note that it won't return the ones obtained with just one (or a part) of the columns.
+
+## Troubleshooting
 
 ### Why does `Jiminy.recommendation()` seem to recommend me wrong charts or to not take into account one of the dataset's columns?
 
 The library tries as best as it can to leverage the use of the first row in order to provide better performance. This means that if you have a dataset whose *first* row doesn't have all the columns set to a "valid" value (see the [API](#new-jiminy-dataset-)), the result won't be accurate.
+
+### Why do I get the warning "Unable to find the column XXX inside the dataset"?
+
+This message means that the library couldn't find the column called "XXX" within the dataset. If you're sure you didn't misspelled the name, then it's because the first dataset's row doesn't contain this column. Learn why Jiminy only checks the first row [here](#why-does-jiminyrecommendation-seem-to-recommend-me-wrong-charts-or-to-not-take-into-account-one-of-the-datasets-columns).
+
+## FAQ
 
 ### How does the library works?
 

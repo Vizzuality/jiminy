@@ -22,7 +22,7 @@ describe('Fields', function() {
 
   });
 
-  describe('#getFields', () => {
+  describe('#computeFields', () => {
     let dataset = new Dataset([ { name: 'Vizzuality', type: 'company' } ]);
     let fields;
 
@@ -31,7 +31,7 @@ describe('Fields', function() {
     });
 
     it('should return an array of instances of Field', () => {
-      let areInstanceOfField = fields.getFields(dataset).reduce((res, field) => {
+      let areInstanceOfField = fields.computeFields(dataset).reduce((res, field) => {
         res = res || field instanceof Field;
         return res;
       }, false);
@@ -40,7 +40,44 @@ describe('Fields', function() {
     });
 
     it('should return an array of length equal to the columns number', () => {
-      expect(fields.getFields(dataset)).to.have.lengthOf(2);
+      expect(fields.computeFields(dataset)).to.have.lengthOf(2);
+    });
+
+  });
+
+  describe('#get', () => {
+    let dataset = new Dataset([ { name: 'Vizzuality', active: true } ]);
+    let fields;
+
+    before(() => {
+      fields = new Fields(dataset);
+    });
+
+    it('should return the field if exist', () => {
+      expect(fields.get(['name']).length).to.equal(1);
+      expect(fields.get(['name'])[0]).to.deep.equal(fields.fields[0]);
+    });
+
+    it('should return an empty array if no field could be found', () => {
+      expect(fields.get(['age'])).to.deep.equal([]);
+    });
+
+  });
+
+  describe('#_getField', () => {
+    let dataset = new Dataset([ { name: 'Vizzuality', active: true } ]);
+    let fields;
+
+    before(() => {
+      fields = new Fields(dataset);
+    });
+
+    it('should return the field if exist', () => {
+      expect(fields._getField('name')).to.deep.equal(fields.fields[0]);
+    });
+
+    it('should return an null if no field could be found', () => {
+      expect(fields._getField('age')).to.deep.equal(null);
     });
 
   });

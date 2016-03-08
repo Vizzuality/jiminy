@@ -9,21 +9,23 @@ const expect = chai.expect;
 
 describe('Charts', function() {
 
-  describe('#constructor', () => {
+  describe('#getAvailable', () => {
     let dataset = new Dataset([ {} ]);
     let fields = new Fields(dataset);
+    let charts = new Charts();
 
     it('should throw an error if no argument', () => {
-      expect(() => { return new Charts(); }).to.throw(Error);
+      expect(() => { return charts.getAvailable(); }).to.throw(Error);
     });
 
     it('should throw an error if called with empty array', () => {
-      expect(() => { return new Charts(fields); }).to.throw(Error);
+      expect(() => { return charts.getAvailable(fields.fields); }).to.throw(Error);
     });
 
-    it('should not throw an error if valid dataset as argument', () => {
+    it('should not throw an error if fields as argument', () => {
       dataset = new Dataset([ { name: 'Vizzuality' } ]);
-      expect(() => { return new Fields(dataset); }).to.not.throw(Error);
+      fields = new Fields(dataset);
+      expect(() => { return charts.getAvailable(fields.fields); }).to.not.throw(Error);
     });
 
   });

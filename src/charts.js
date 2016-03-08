@@ -54,15 +54,9 @@ const CONFIG = [
 
 export default class Charts {
 
-  constructor(fields) {
+  constructor() {
     this._config = CONFIG;
     this._charts = this._createCharts();
-
-    if(fields && fields.fields.length > 0) {
-      this._fields = fields.fields;
-    } else {
-      throw new Error('Charts must be instancianted with at least one field.');
-    }
   }
 
   get charts() { return this._charts; }
@@ -78,11 +72,26 @@ export default class Charts {
     return charts;
   }
 
-  getAvailable() {
+  /* Return the available charts according to the available fields.
+   * Options can contain:
+   *  - allInclusive (boolean): the charts must be computed with all the columns
+   *    (not just some of them)
+   */
+  getAvailable(fields, options) {
     let available = [];
 
+    options = options || {};
+
+    if(!fields || !fields.length) {
+      throw new Error('At least one field is required to compute the available charts.');
+    }
+
     for(let i = 0, j = this._charts.length; i < j; i++) {
-      if(this._charts[i].isAvailable(this._fields)) {
+      const options = {};
+
+      if(options.allInclusive) options.allInclusive = true;
+
+      if(this._charts[i].isAvailable(fields, options)) {
         available.push(this._charts[i]);
       }
     }

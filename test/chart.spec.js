@@ -53,6 +53,10 @@ describe('Chart', function() {
       expect(chart.isAvailable([ temporal ])).to.be.false;
       expect(chart.isAvailable([ ordinal ])).to.be.false;
     });
+
+    it('should return false if chart can\'t be computed with all the columns inclusive and option is enabled', () => {
+      expect(chart.isAvailable([ nominal, temporal ], { allInclusive: true })).to.be.false;
+    });
   });
 
   describe('#_capitalize', () => {
