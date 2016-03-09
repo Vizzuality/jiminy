@@ -119,6 +119,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return chart.name;
 	      });
 	    }
+	
+	    /* Return the columns that can be used to compute the chart. If chartName
+	     * doesn't correspond to any chart or isn't available, throw an error. */
+	
+	  }, {
+	    key: 'columns',
+	    value: function columns(chartName) {
+	      if (!chartName) {
+	        throw new Error('columns expects the name of the chart as first argument.');
+	      }
+	
+	      var chart = new _charts2.default().getChart(chartName);
+	
+	      if (!chart) {
+	        throw new Error(chartName + ' isn\'t a valid chart name. ' + 'Check the documentation to see existing types of charts.');
+	      }
+	
+	      return chart.computeUsefulFields(this._fields.fields).map(function (field) {
+	        return field.name;
+	      });
+	    }
 	  }, {
 	    key: 'name',
 	    get: function get() {
@@ -745,6 +766,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      return available;
 	    }
+	
+	    /* Return the chart called chartName if exists, null otherwise */
+	
+	  }, {
+	    key: 'getChart',
+	    value: function getChart(chartName) {
+	      for (var i = 0, j = this._charts.length; i < j; i++) {
+	        if (this._charts[i].name === chartName) return this._charts[i];
+	      }
+	      return null;
+	    }
 	  }, {
 	    key: 'charts',
 	    get: function get() {
@@ -798,25 +830,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      options = options || {};
 	
-	      for (var i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
-	        var condition = this._acceptedStatTypes[i];
+	      /* We search if the fields exactly match the one of the combination of the
+	       * accepted statistical types */
+	      if (options.allInclusive) {
+	        for (var i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
+	          var condition = this._acceptedStatTypes[i];
 	
-	        /* If the requirement is just one statistical type  */
-	        if (condition.length === 1) {
-	          available = this._existFields(fields, condition[0], 1);
-	        } else {
-	          /* If the requirement are two same statistical types */
-	          if (condition[0] === condition[1]) {
-	            available = this._existFields(fields, condition[0], 2);
+	          if (condition.length === fields.length) {
+	            /* If the requirement is just one statistical type  */
+	            if (condition.length === 1) {
+	              available = this._existFields(fields, condition[0], 1) && !this._existFields(fields, condition[0], 2);
+	            } else {
+	              /* If the requirement are two same statistical types */
+	              if (condition[0] === condition[1]) {
+	                available = this._existFields(fields, condition[0], 2) && !this._existFields(fields, condition[0], 3);
 	
-	            /* If the requirement are two different statistical types */
-	          } else {
-	              available = this._existFields(fields, condition[0], 1) && this._existFields(fields, condition[1], 1);
+	                /* If the requirement are two different statistical types */
+	              } else {
+	                  available = this._existFields(fields, condition[0], 1) && !this._existFields(fields, condition[0], 2) && this._existFields(fields, condition[1], 1) && !this._existFields(fields, condition[1], 2);
+	                }
 	            }
+	          }
+	
+	          if (available) break;
 	        }
 	
-	        if (available) break;
-	      }
+	        /* We search if among the fields there are enough of specific the
+	         * statistical types for at least one of the combinations accepted by the
+	         * chart */
+	      } else {
+	          for (var i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
+	            var condition = this._acceptedStatTypes[i];
+	
+	            /* If the requirement is just one statistical type  */
+	            if (condition.length === 1) {
+	              available = this._existFields(fields, condition[0], 1);
+	            } else {
+	              /* If the requirement are two same statistical types */
+	              if (condition[0] === condition[1]) {
+	                available = this._existFields(fields, condition[0], 2);
+	
+	                /* If the requirement are two different statistical types */
+	              } else {
+	                  available = this._existFields(fields, condition[0], 1) && this._existFields(fields, condition[1], 1);
+	                }
+	            }
+	
+	            if (available) break;
+	          }
+	        }
 	
 	      return available;
 	    }
@@ -838,6 +900,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return fields.filter(function (field) {
 	        return field.statType['is' + this._capitalize(statTypeName)];
 	      }.bind(this)).length >= count;
+	    }
+	
+	    /* Return among the passed fields, the ones that can be used to compute the
+	     * chart, taking into account that each of them will be able or to generate
+	     * the chart by its own, or could be combined with another one to do so */
+	
+	  }, {
+	    key: 'computeUsefulFields',
+	    value: function computeUsefulFields(fields) {
+	      var _this = this;
+	
+	      return fields.filter(function (field) {
+	        var isUseful = false;
+	
+	        for (var i = 0, j = _this._acceptedStatTypes.length; i < j; i++) {
+	          var acceptedStatType = _this._acceptedStatTypes[i];
+	
+	          if (acceptedStatType.length === 1) {
+	            isUseful = acceptedStatType[0] === field.statType.name;
+	          } else {
+	            if (acceptedStatType[0] === acceptedStatType[1]) {
+	              isUseful = acceptedStatType[0] === field.statType.name && _this._existFields(fields, acceptedStatType[0], 2);
+	            } else {
+	              isUseful = acceptedStatType[0] === field.statType.name && _this._existFields(fields, acceptedStatType[1], 1);
+	            }
+	          }
+	
+	          if (isUseful) break;
+	        }
+	
+	        return isUseful;
+	      });
 	    }
 	  }, {
 	    key: 'equals',

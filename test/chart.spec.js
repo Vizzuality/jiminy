@@ -3,6 +3,7 @@
 import chai from 'chai';
 import Chart from 'chart';
 import Dataset from 'dataset';
+import Fields from 'fields';
 import Field from 'field';
 
 const expect = chai.expect;
@@ -90,6 +91,27 @@ describe('Chart', function() {
         expect(chart._existFields(fields, fields[i].statType.name, 2)).to.be.false;
       }
     });
+  });
+
+  describe('#computeUsefulFields', () => {
+    let dataset, fields, chart;
+
+    before(() => {
+      dataset = new Dataset([ { name: 'Vizzuality', age: 4 } ]);
+      fields = new Fields(dataset);
+      chart = new Chart({ name: 'bar', acceptedStatTypes: [
+        [ 'nominal' ],
+        [ 'quantitative', 'temporal' ],
+        [ 'temporal' ],
+        [ 'quantitative', 'ordinal' ]
+      ]});
+    });
+
+    it('should return only the fields that can be used to render the chart', () => {
+      /* The last rule isn't satisfied as there's no quantitive column */
+      expect(chart.computeUsefulFields(fields.fields).length).to.equals(1);
+    });
+
   });
 
   describe('#equals', () => {

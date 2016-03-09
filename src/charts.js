@@ -99,4 +99,12 @@ export default class Charts {
     return available;
   }
 
+  /* Return the chart called chartName if exists, null otherwise */
+  getChart(chartName) {
+    for(let i = 0, j = this._charts.length; i < j; i++) {
+      if(this._charts[i].name === chartName) return this._charts[i];
+    }
+    return null;
+  }
+
 }

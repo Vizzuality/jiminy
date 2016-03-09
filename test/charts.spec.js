@@ -30,4 +30,18 @@ describe('Charts', function() {
 
   });
 
+  describe('#getChart', () => {
+    let charts = new Charts();
+
+    it('should return null if the chart name doesn\'t exist', () => {
+      expect(charts.getChart('Vizzuality')).to.equals(null);
+    });
+
+    it('should return true if the chart name exists', () => {
+      const chart = charts._charts[0];
+
+      expect(charts.getChart(chart.name)).to.be.deep.equals(chart);
+    });
+  });
+
 });

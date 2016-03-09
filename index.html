@@ -23,6 +23,7 @@
       var jiminy = new Jiminy(data);
       console.log('Available type of charts: ' + jiminy.recommendation());
       console.log('Available type of charts: ' + jiminy.recommendation(['population']));
+      console.log('Useful columns for rendering a pie chart: ' + jiminy.columns('pie'));
     </script>
   </body>
 </html>

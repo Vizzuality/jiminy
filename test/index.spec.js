@@ -43,4 +43,46 @@ describe('Jiminy', function() {
 
   });
 
+  describe('#columns', () => {
+    let data = [
+      { name: 'Vizzuality' }
+    ];
+    let data2 = [
+      { name: 'Vizzuality',  active: '5/5/2015' }
+    ];
+    let jiminy = new Jiminy(data);
+    let jiminy2 = new Jiminy(data2);
+
+    it('should throw an error if no argument or null or undefined or not a string', () => {
+      expect(() => { return jiminy.columns(); }).to.throw(Error);
+      expect(() => { return jiminy.columns(undefined); }).to.throw(Error);
+      expect(() => { return jiminy.columns(null); }).to.throw(Error);
+      expect(() => { return jiminy.columns([]); }).to.throw(Error);
+      expect(() => { return jiminy.columns([ 'Vizzuality' ]); }).to.throw(Error);
+      expect(() => { return jiminy.columns(1); }).to.throw(Error);
+      expect(() => { return jiminy.columns(true); }).to.throw(Error);
+    });
+
+    it('should throw an error the chart doesn\'t exist', () => {
+      expect(() => { return jiminy.columns('Vizzuality'); }).to.throw(Error);
+    });
+
+    it('should not throw any error if the chart exists', () => {
+      expect(() => { return jiminy.columns('scatter'); }).to.not.throw(Error);
+    });
+
+    it('should return an empty array if the chart can\'t be rendered with the dataset\'s fields', () => {
+      expect(jiminy.columns('1d_tick')).to.deep.equals([]);
+    });
+
+    it('should return an empty array if the chart needs a second columns the dataset doesn\'t have', () => {
+      expect(jiminy.columns('scatter')).to.deep.equals([]);
+    });
+
+    it('should return the only the columns that can be used to render the chart', () => {
+      expect(jiminy2.columns('pie')).to.deep.equals([ 'name' ]);
+    });
+
+  });
+
 });

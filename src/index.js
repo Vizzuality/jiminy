@@ -43,6 +43,26 @@ export default class Jiminy {
       return chart.name;
     });
   }
+
+  /* Return the columns that can be used to compute the chart. If chartName
+   * doesn't correspond to any chart or isn't available, throw an error. */
+  columns(chartName) {
+    if(!chartName) {
+      throw new Error('columns expects the name of the chart as first argument.');
+    }
+
+    const chart = new Charts().getChart(chartName);
+
+    if(!chart) {
+      throw new Error(`${chartName} isn't a valid chart name. ` +
+        'Check the documentation to see existing types of charts.');
+    }
+
+    return chart.computeUsefulFields(this._fields.fields).map((field) => {
+      return field.name;
+    });
+
+  }
 };
 
 module.exports = exports['default'];

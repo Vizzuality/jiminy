@@ -101,6 +101,36 @@ export default class Chart {
     }.bind(this)).length >= count;
   }
 
+  /* Return among the passed fields, the ones that can be used to compute the
+   * chart, taking into account that each of them will be able or to generate
+   * the chart by its own, or could be combined with another one to do so */
+  computeUsefulFields(fields) {
+    return fields.filter((field) => {
+      let isUseful = false;
+
+      for(let i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
+        const acceptedStatType = this._acceptedStatTypes[i];
+
+        if(acceptedStatType.length === 1) {
+          isUseful = acceptedStatType[0] === field.statType.name;
+        } else {
+          if(acceptedStatType[0] === acceptedStatType[1]) {
+            isUseful = acceptedStatType[0] === field.statType.name &&
+              this._existFields(fields, acceptedStatType[0], 2);
+          } else {
+            isUseful = acceptedStatType[0] === field.statType.name &&
+              this._existFields(fields, acceptedStatType[1], 1);
+          }
+        }
+
+        if(isUseful) break;
+      }
+
+      return isUseful;
+
+    });
+  }
+
   equals(o) {
     return o.constructor && o.constructor === this.constructor &&
       o.name === this._name &&
