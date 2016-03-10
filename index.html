@@ -24,6 +24,8 @@
       console.log('Available type of charts: ' + jiminy.recommendation());
       console.log('Available type of charts: ' + jiminy.recommendation(['population']));
       console.log('Useful columns for rendering a pie chart: ' + jiminy.columns('pie'));
+      console.log('Useful second columns for rendering a pie chart: ' + jiminy.columns('pie', 'city'));
+      console.log('Useful second columns for rendering a bar chart: ' + jiminy.columns('bar', 'city'));
     </script>
   </body>
 </html>

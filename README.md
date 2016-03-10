@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Vizzuality/jiminy.svg?branch=master)](https://travis-ci.org/Vizzuality/jiminy)
 
-Jiminy is a lightweight library, ~2.9 kB (gzipped + minified), whose aim is to infer which type of visualization can be rendered from a dataset. It's only dependency is [Datalib](https://github.com/vega/datalib).
+Jiminy is a lightweight library, ~3 kB (gzipped + minified), whose aim is to infer which type of visualization can be rendered from a dataset. It's only dependency is [Datalib](https://github.com/vega/datalib).
 
 ## Installation
 
@@ -96,11 +96,15 @@ Some of the possibilities (like `'pie'`) can be the result of a transformation m
 
 If an array of column names is provided, `recommendation` returns only the charts that can be obtained with the combination of all the specified columns. Note that it won't return the ones obtained with just one (or a part) of the columns.
 
-### Jiminy.columns( chart )
+### Jiminy.columns( chart , columnName? )
 
-This methods accepts as parameter the name of a chart and returns the dataset's column names that can be used to compute it. It doesn't return combinations of columns but instead a list of columns that can be used by their own to render the chart, or one of a combination of two. It's useful when letting a user choose from a list of columns what are the ones he/she can use to render a concrete chart.
+This method accepts as first parameter the name of a chart, and as second, the name of a column (optional).
 
-If the method returns an empty array, it means that the chart can't be obtained with the dataset. In that case, you could preferably check before the available types of charts making a call to `recommendation`.
+If you just pass the name of a chart, it returns the dataset's column names that can be used to compute it. It doesn't return combinations of columns (arrays) but instead a list of columns that can be used, by their own, to render the chart, or one of a combination of two. It's useful when letting the user choose, from a list of columns, what is the (first) one he/she can select to render a selected chart. Then, if your chart needs two columns and you want to know which one can be chosen, then also pass the first column the user has chosen (see below).
+
+If a column name is passed as second argument, the method returns all the columns that can be used, in combination of the passed one, to compute the selected chart.
+
+If the method returns an empty array, it can mean two things: one, that the chart can't be computed with the dataset or with the passed column; two, that the chart is unidimensional so it's useless to ask for a second column to render it. For the first case, you could preferably check before the available types of charts making a call to `recommendation`.
 
 ## Troubleshooting
 

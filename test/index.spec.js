@@ -50,8 +50,12 @@ describe('Jiminy', function() {
     let data2 = [
       { name: 'Vizzuality',  active: '5/5/2015' }
     ];
+    let data3 = [
+      { name: 'Vizzuality',  work: 'engineer', level: 1 }
+    ];
     let jiminy = new Jiminy(data);
     let jiminy2 = new Jiminy(data2);
+    let jiminy3 = new Jiminy(data3);
 
     it('should throw an error if no argument or null or undefined or not a string', () => {
       expect(() => { return jiminy.columns(); }).to.throw(Error);
@@ -59,6 +63,7 @@ describe('Jiminy', function() {
       expect(() => { return jiminy.columns(null); }).to.throw(Error);
       expect(() => { return jiminy.columns([]); }).to.throw(Error);
       expect(() => { return jiminy.columns([ 'Vizzuality' ]); }).to.throw(Error);
+      expect(() => { return jiminy.columns({ name: 'Vizzuality' }); }).to.throw(Error);
       expect(() => { return jiminy.columns(1); }).to.throw(Error);
       expect(() => { return jiminy.columns(true); }).to.throw(Error);
     });
@@ -81,6 +86,34 @@ describe('Jiminy', function() {
 
     it('should return the only the columns that can be used to render the chart', () => {
       expect(jiminy2.columns('pie')).to.deep.equals([ 'name' ]);
+    });
+
+    it('should not throw an error if the second argument is omitted, undefined or null', () => {
+      expect(() => { return jiminy.columns('scatter', undefined); }).to.not.throw(Error);
+      expect(() => { return jiminy.columns('scatter', null); }).to.not.throw(Error);
+    });
+
+    it('should throw an error if the second argument is present and not a string', () => {
+      expect(() => { return jiminy.columns('scatter', false); }).to.throw(Error);
+      expect(() => { return jiminy.columns('scatter', [ 'Vizzuality' ]); }).to.throw(Error);
+      expect(() => { return jiminy.columns('scatter', { name: 'Vizzuality' }); }).to.throw(Error);
+      expect(() => { return jiminy.columns('scatter', 1); }).to.throw(Error);
+    });
+
+    it('should throw an error if the second argument is not an existing column', () => {
+      expect(() => { return jiminy.columns('scatter', 'size'); }).to.throw(Error);
+    });
+
+    it('should not throw an error if the second argument is an existing column', () => {
+      expect(() => { return jiminy.columns('scatter', 'name'); }).to.not.throw(Error);
+    });
+
+    it('should return an empty array if the dataset just has one column', () => {
+      expect(jiminy.columns('pie', 'name')).to.deep.equals([]);
+    });
+
+    it('should return the right available columns for the second choice', () => {
+      expect(jiminy3.columns('scatter', 'name')).to.deep.equals([ 'work', 'level' ]);
     });
 
   });

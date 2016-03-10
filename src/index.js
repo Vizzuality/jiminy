@@ -46,7 +46,7 @@ export default class Jiminy {
 
   /* Return the columns that can be used to compute the chart. If chartName
    * doesn't correspond to any chart or isn't available, throw an error. */
-  columns(chartName) {
+  columns(chartName, columnName) {
     if(!chartName) {
       throw new Error('columns expects the name of the chart as first argument.');
     }
@@ -58,7 +58,28 @@ export default class Jiminy {
         'Check the documentation to see existing types of charts.');
     }
 
-    return chart.computeUsefulFields(this._fields.fields).map((field) => {
+    if(columnName !== null && columnName !== undefined &&
+      typeof columnName !== 'string') {
+      throw new Error('The second parameter of columns must be a string.');
+    }
+
+    /* We want the suggestions for the first column */
+    if(!columnName) {
+      return chart.computeUsefulFields(this._fields.fields).map((field) => {
+        return field.name;
+      });
+    }
+
+    /* We want the suggestions for the second one */
+
+    /* We check if the name of the column exists */
+    if(!~this._dataset.getColumnNames().indexOf(columnName)) {
+      throw new Error(`Unable to find the column "${columnName}" inside the dataset`);
+    }
+
+    const field = this._fields.get([ columnName ])[0];
+
+    return chart.computeUsefulFields(this._fields.fields, field).map((field) => {
       return field.name;
     });
 

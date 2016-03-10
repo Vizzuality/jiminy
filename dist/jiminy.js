@@ -125,7 +125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  }, {
 	    key: 'columns',
-	    value: function columns(chartName) {
+	    value: function columns(chartName, columnName) {
 	      if (!chartName) {
 	        throw new Error('columns expects the name of the chart as first argument.');
 	      }
@@ -136,7 +136,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        throw new Error(chartName + ' isn\'t a valid chart name. ' + 'Check the documentation to see existing types of charts.');
 	      }
 	
-	      return chart.computeUsefulFields(this._fields.fields).map(function (field) {
+	      if (columnName !== null && columnName !== undefined && typeof columnName !== 'string') {
+	        throw new Error('The second parameter of columns must be a string.');
+	      }
+	
+	      /* We want the suggestions for the first column */
+	      if (!columnName) {
+	        return chart.computeUsefulFields(this._fields.fields).map(function (field) {
+	          return field.name;
+	        });
+	      }
+	
+	      /* We want the suggestions for the second one */
+	
+	      /* We check if the name of the column exists */
+	      if (! ~this._dataset.getColumnNames().indexOf(columnName)) {
+	        throw new Error('Unable to find the column "' + columnName + '" inside the dataset');
+	      }
+	
+	      var field = this._fields.get([columnName])[0];
+	
+	      return chart.computeUsefulFields(this._fields.fields, field).map(function (field) {
 	        return field.name;
 	      });
 	    }
@@ -903,12 +923,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    /* Return among the passed fields, the ones that can be used to compute the
-	     * chart, taking into account that each of them will be able or to generate
-	     * the chart by its own, or could be combined with another one to do so */
+	     * chart, taking into account that each of them will be able to generate the
+	     * chart by its own, or could be combined with another one to do so.
+	     * If a field is also passed, then return all the fields than can be combined
+	     * with it to render the chart. If the chart can only be rendered with the
+	     * field by its own, or couldn't be rendered at all with the passed field,
+	     * return an empty array. */
 	
 	  }, {
 	    key: 'computeUsefulFields',
-	    value: function computeUsefulFields(fields) {
+	    value: function computeUsefulFields(fields, selectedField) {
 	      var _this = this;
 	
 	      return fields.filter(function (field) {
@@ -918,12 +942,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var acceptedStatType = _this._acceptedStatTypes[i];
 	
 	          if (acceptedStatType.length === 1) {
-	            isUseful = acceptedStatType[0] === field.statType.name;
+	            isUseful = !selectedField && acceptedStatType[0] === field.statType.name;
 	          } else {
 	            if (acceptedStatType[0] === acceptedStatType[1]) {
-	              isUseful = acceptedStatType[0] === field.statType.name && _this._existFields(fields, acceptedStatType[0], 2);
+	              isUseful = acceptedStatType[0] === field.statType.name && _this._existFields(fields, acceptedStatType[0], 2) && (!selectedField || selectedField && selectedField.name !== field.name);
 	            } else {
-	              isUseful = acceptedStatType[0] === field.statType.name && _this._existFields(fields, acceptedStatType[1], 1);
+	              if (!selectedField) {
+	                isUseful = acceptedStatType[0] === field.statType.name && _this._existFields(fields, acceptedStatType[1], 1);
+	              } else {
+	                isUseful = acceptedStatType[0] === field.statType.name && _this._existFields(fields, acceptedStatType[1], 1) && selectedField.statType.name === acceptedStatType[1] || acceptedStatType[1] === field.statType.name && _this._existFields(fields, acceptedStatType[0], 1) && selectedField.statType.name === acceptedStatType[0];
+	              }
 	            }
 	          }
 	

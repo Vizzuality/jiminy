@@ -94,7 +94,19 @@ describe('Chart', function() {
   });
 
   describe('#computeUsefulFields', () => {
-    let dataset, fields, chart;
+    let dataset,
+      dataset2,
+      dataset3,
+      fields,
+      fields2,
+      fields3,
+      chart,
+      chart2,
+      chart3,
+      nominal,
+      ordinal,
+      quantitative,
+      temporal;
 
     before(() => {
       dataset = new Dataset([ { name: 'Vizzuality', age: 4 } ]);
@@ -105,11 +117,56 @@ describe('Chart', function() {
         [ 'temporal' ],
         [ 'quantitative', 'ordinal' ]
       ]});
+
+      dataset2 = new Dataset([
+        { name: 'Vizzuality', age: 4, active: '5/5/2015', points: 1 },
+        { name: 'Vizzuality', age: 4, active: '5/5/2015', points: 2 },
+        { name: 'Vizzuality', age: 4, active: '5/5/2015', points: 3 },
+        { name: 'Vizzuality', age: 4, active: '5/5/2015', points: 4 },
+        { name: 'Vizzuality', age: 4, active: '5/5/2015', points: 5 }
+      ]);
+      fields2 = new Fields(dataset2);
+      chart2 = new Chart({ name: 'line', acceptedStatTypes: [
+        [ 'nominal' ],
+        [ 'quantitative', 'temporal' ]
+      ]});
+      nominal = fields2.get([ 'name' ])[0];
+      ordinal = fields2.get([ 'age' ])[0];
+      quantitative = fields2.get([ 'points' ])[0];
+      temporal = fields2.get([ 'active' ])[0];
+
+      dataset3 = new Dataset([
+        { name: 'Vizzuality', surname: 'Vizz' }
+      ]);
+      fields3 = new Fields(dataset3);
+      chart3 = new Chart({ name: 'mychart', acceptedStatTypes: [
+        [ 'nominal', 'nominal' ]
+      ]});
     });
 
     it('should return only the fields that can be used to render the chart', () => {
       /* The last rule isn't satisfied as there's no quantitive column */
       expect(chart.computeUsefulFields(fields.fields).length).to.equals(1);
+    });
+
+    it('should return an empty array if a column is passed and just one column is need to render the chart', () => {
+      expect(chart2.computeUsefulFields(fields2.fields, nominal).length).to.equals(0);
+    });
+
+    it('should not throw any error if the chart can\'t be rendered with the passed column', () => {
+      expect(() => { return chart2.computeUsefulFields(fields2.fields, ordinal); }).to.not.throw(Error);
+    });
+
+    it('should return an empty array if the chart can\'t be rendered with the passed column', () => {
+      expect(chart2.computeUsefulFields(fields2.fields, ordinal).length).to.equals(0);
+    });
+
+    it('should return only the fields that can be used for the second column to render the chart', () => {
+      expect(chart2.computeUsefulFields(fields2.fields, quantitative)).to.deep.equals([ temporal ]);
+    });
+
+    it('should not return the field passed as argument', () => {
+      expect(chart3.computeUsefulFields(fields3.fields, fields3.get([ 'name' ])[0]).length).to.equals(1);
     });
 
   });

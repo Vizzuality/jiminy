@@ -102,9 +102,13 @@ export default class Chart {
   }
 
   /* Return among the passed fields, the ones that can be used to compute the
-   * chart, taking into account that each of them will be able or to generate
-   * the chart by its own, or could be combined with another one to do so */
-  computeUsefulFields(fields) {
+   * chart, taking into account that each of them will be able to generate the
+   * chart by its own, or could be combined with another one to do so.
+   * If a field is also passed, then return all the fields than can be combined
+   * with it to render the chart. If the chart can only be rendered with the
+   * field by its own, or couldn't be rendered at all with the passed field,
+   * return an empty array. */
+  computeUsefulFields(fields, selectedField) {
     return fields.filter((field) => {
       let isUseful = false;
 
@@ -112,14 +116,26 @@ export default class Chart {
         const acceptedStatType = this._acceptedStatTypes[i];
 
         if(acceptedStatType.length === 1) {
-          isUseful = acceptedStatType[0] === field.statType.name;
+          isUseful = !selectedField &&
+            acceptedStatType[0] === field.statType.name;
         } else {
           if(acceptedStatType[0] === acceptedStatType[1]) {
             isUseful = acceptedStatType[0] === field.statType.name &&
-              this._existFields(fields, acceptedStatType[0], 2);
+              this._existFields(fields, acceptedStatType[0], 2) &&
+              (!selectedField || selectedField &&
+              selectedField.name !== field.name);
           } else {
-            isUseful = acceptedStatType[0] === field.statType.name &&
-              this._existFields(fields, acceptedStatType[1], 1);
+            if(!selectedField) {
+              isUseful = acceptedStatType[0] === field.statType.name &&
+                this._existFields(fields, acceptedStatType[1], 1);
+            } else {
+              isUseful = (acceptedStatType[0] === field.statType.name &&
+                this._existFields(fields, acceptedStatType[1], 1) &&
+                selectedField.statType.name === acceptedStatType[1] ||
+                acceptedStatType[1] === field.statType.name &&
+                this._existFields(fields, acceptedStatType[0], 1) &&
+                selectedField.statType.name === acceptedStatType[0]);
+            }
           }
         }
 
