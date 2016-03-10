@@ -28,60 +28,34 @@ export default class Chart {
 
     options = options || {};
 
-    /* We search if the fields exactly match the one of the combination of the
-     * accepted statistical types */
-    if(options.allInclusive) {
-      for(let i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
-        let condition = this._acceptedStatTypes[i];
+    for(let i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
+      let condition = this._acceptedStatTypes[i];
 
-        if(condition.length === fields.length) {
-          /* If the requirement is just one statistical type  */
-          if(condition.length === 1) {
-            available = this._existFields(fields, condition[0], 1) &&
-              !this._existFields(fields, condition[0], 2);
-          } else {
-            /* If the requirement are two same statistical types */
-            if(condition[0] === condition[1]) {
-              available = this._existFields(fields, condition[0], 2) &&
-                !this._existFields(fields, condition[0], 3);
+      if(options.allInclusive && condition.length !== fields.length) continue;
 
-            /* If the requirement are two different statistical types */
-            } else {
-              available = this._existFields(fields, condition[0], 1) &&
-                !this._existFields(fields, condition[0], 2) &&
-                this._existFields(fields, condition[1], 1) &&
-                !this._existFields(fields, condition[1], 2);
-            }
-          }
-        }
+      /* If the requirement is just one statistical type  */
+      if(condition.length === 1) {
+        available = this._existFields(fields, condition[0], 1) &&
+          (!options.allInclusive || options.allInclusive &&
+          !this._existFields(fields, condition[0], 2));
+      } else {
+        /* If the requirement are two same statistical types */
+        if(condition[0] === condition[1]) {
+          available = this._existFields(fields, condition[0], 2) &&
+            (!options.allInclusive || options.allInclusive &&
+            !this._existFields(fields, condition[0], 3));
 
-        if(available) break;
-      }
-
-    /* We search if among the fields there are enough of specific the
-     * statistical types for at least one of the combinations accepted by the
-     * chart */
-    } else {
-      for(let i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
-        let condition = this._acceptedStatTypes[i];
-
-        /* If the requirement is just one statistical type  */
-        if(condition.length === 1) {
-          available = this._existFields(fields, condition[0], 1);
+        /* If the requirement are two different statistical types */
         } else {
-          /* If the requirement are two same statistical types */
-          if(condition[0] === condition[1]) {
-            available = this._existFields(fields, condition[0], 2);
-
-          /* If the requirement are two different statistical types */
-          } else {
-            available = this._existFields(fields, condition[0], 1) &&
-              this._existFields(fields, condition[1], 1);
-          }
+          available = this._existFields(fields, condition[0], 1) &&
+            this._existFields(fields, condition[1], 1) &&
+            (!options.allInclusive || options.allInclusive &&
+            !this._existFields(fields, condition[0], 2) &&
+            !this._existFields(fields, condition[1], 2));
         }
-
-        if(available) break;
       }
+
+      if(available) break;
     }
 
     return available;
