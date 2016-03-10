@@ -25,7 +25,8 @@ export default class Jiminy {
 
     if(fieldNames !== null && fieldNames !== undefined) {
       if(!Array.isArray(fieldNames)) {
-        throw new Error('recommendation should be called without any parameter or with an array of column names.');
+        throw new Error('Jiminy: recommendation should be called without any ' +
+          'parameter or with an array of column names.');
       } else if(fieldNames.length) {
         allColumnsInclusive = true;
         fields = this._fields.get(fieldNames);
@@ -48,7 +49,7 @@ export default class Jiminy {
    * doesn't correspond to any chart or isn't available, throw an error. */
   columns(chartName, columnName) {
     if(!chartName) {
-      throw new Error('columns expects the name of the chart as first argument.');
+      throw new Error('Jiminy: columns expects the name of the chart as first argument.');
     }
 
     const chart = new Charts().getChart(chartName);
@@ -60,7 +61,7 @@ export default class Jiminy {
 
     if(columnName !== null && columnName !== undefined &&
       typeof columnName !== 'string') {
-      throw new Error('The second parameter of columns must be a string.');
+      throw new Error('Jiminy: The second parameter of columns must be a string.');
     }
 
     /* We want the suggestions for the first column */

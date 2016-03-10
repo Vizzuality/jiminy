@@ -11,13 +11,13 @@ export default class Type {
     this._types = TYPES;
 
     if(!dl) {
-      throw new Error('Make sure to include the dependency \'datalib\'');
+      throw new Error('Jiminy: Make sure to include the dependency \'datalib\'');
     }
 
     if(fieldName && dataset && dataset.valid) {
       this._name = this._inferType(fieldName, dataset);
     } else {
-      throw new Error('A type requires the dataset and the field name.');
+      throw new Error('Jiminy: A type requires the dataset and the field name.');
     }
 
   }

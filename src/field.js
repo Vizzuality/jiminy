@@ -7,7 +7,7 @@ export default class Field {
 
   constructor(name, dataset) {
     if(!name || !dataset || !dataset.valid) {
-      throw new Error('Fields must be instanciated with a name and with the ' +
+      throw new Error('Jiminy: Fields must be instanciated with a name and with the ' +
        'dataset');
     }
 

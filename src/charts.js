@@ -83,7 +83,7 @@ export default class Charts {
     options = options || {};
 
     if(!fields || !fields.length) {
-      throw new Error('At least one field is required to compute the available charts.');
+      throw new Error('Jiminy: At least one field is required to compute the available charts.');
     }
 
     for(let i = 0, j = this._charts.length; i < j; i++) {

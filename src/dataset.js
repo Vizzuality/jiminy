@@ -7,7 +7,7 @@ export default class Dataset  {
   constructor(dataset) {
     this._data = dataset;
     if(!this.valid) {
-      throw new Error('The dataset must be a non-empty array.');
+      throw new Error('Jiminy: The dataset must be a non-empty array.');
     }
   }
 

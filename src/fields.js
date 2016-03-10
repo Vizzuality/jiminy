@@ -6,7 +6,7 @@ export default class Fields {
 
   constructor(dataset) {
     if(!dataset || !dataset.valid) {
-      throw new Error('Fields expects a valid dataset');
+      throw new Error('Jiminy: Fields expects a valid dataset');
     } else {
       this._fields = this.computeFields(dataset);
     }
@@ -37,7 +37,7 @@ export default class Fields {
       let field = this._getField(fieldName);
 
       if(field) fields.push(field);
-      else console.warn(`Unable to find the column "${fieldName}" inside the dataset.`);
+      else console.warn(`Jiminy: Unable to find the column "${fieldName}" inside the dataset.`);
     }
 
     return fields;

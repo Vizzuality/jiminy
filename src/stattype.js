@@ -12,7 +12,7 @@ export default class StatType {
     if(type && stats && stats.hasOwnProperty('atLeast5DistinctValues')) {
       this._name = this._inferType(type, stats);
     } else {
-      throw new Error('Statistical types must be instanciated with the ' +
+      throw new Error('Jiminy: Statistical types must be instanciated with the ' +
         'field\'s type and the stats.');
     }
   }

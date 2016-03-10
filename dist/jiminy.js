@@ -101,7 +101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      if (fieldNames !== null && fieldNames !== undefined) {
 	        if (!Array.isArray(fieldNames)) {
-	          throw new Error('recommendation should be called without any parameter or with an array of column names.');
+	          throw new Error('Jiminy: recommendation should be called without any ' + 'parameter or with an array of column names.');
 	        } else if (fieldNames.length) {
 	          allColumnsInclusive = true;
 	          fields = this._fields.get(fieldNames);
@@ -127,7 +127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'columns',
 	    value: function columns(chartName, columnName) {
 	      if (!chartName) {
-	        throw new Error('columns expects the name of the chart as first argument.');
+	        throw new Error('Jiminy: columns expects the name of the chart as first argument.');
 	      }
 	
 	      var chart = new _charts2.default().getChart(chartName);
@@ -137,7 +137,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	
 	      if (columnName !== null && columnName !== undefined && typeof columnName !== 'string') {
-	        throw new Error('The second parameter of columns must be a string.');
+	        throw new Error('Jiminy: The second parameter of columns must be a string.');
 	      }
 	
 	      /* We want the suggestions for the first column */
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    this._data = dataset;
 	    if (!this.valid) {
-	      throw new Error('The dataset must be a non-empty array.');
+	      throw new Error('Jiminy: The dataset must be a non-empty array.');
 	    }
 	  }
 	
@@ -342,7 +342,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _classCallCheck(this, Fields);
 	
 	    if (!dataset || !dataset.valid) {
-	      throw new Error('Fields expects a valid dataset');
+	      throw new Error('Jiminy: Fields expects a valid dataset');
 	    } else {
 	      this._fields = this.computeFields(dataset);
 	    }
@@ -439,7 +439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _classCallCheck(this, Field);
 	
 	    if (!name || !dataset || !dataset.valid) {
-	      throw new Error('Fields must be instanciated with a name and with the ' + 'dataset');
+	      throw new Error('Jiminy: Fields must be instanciated with a name and with the ' + 'dataset');
 	    }
 	
 	    this._name = name;
@@ -519,13 +519,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._types = TYPES;
 	
 	    if (!_datalib2.default) {
-	      throw new Error('Make sure to include the dependency \'datalib\'');
+	      throw new Error('Jiminy: Make sure to include the dependency \'datalib\'');
 	    }
 	
 	    if (fieldName && dataset && dataset.valid) {
 	      this._name = this._inferType(fieldName, dataset);
 	    } else {
-	      throw new Error('A type requires the dataset and the field name.');
+	      throw new Error('Jiminy: A type requires the dataset and the field name.');
 	    }
 	  }
 	
@@ -628,7 +628,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (type && stats && stats.hasOwnProperty('atLeast5DistinctValues')) {
 	      this._name = this._inferType(type, stats);
 	    } else {
-	      throw new Error('Statistical types must be instanciated with the ' + 'field\'s type and the stats.');
+	      throw new Error('Jiminy: Statistical types must be instanciated with the ' + 'field\'s type and the stats.');
 	    }
 	  }
 	
@@ -771,7 +771,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      options = options || {};
 	
 	      if (!fields || !fields.length) {
-	        throw new Error('At least one field is required to compute the available charts.');
+	        throw new Error('Jiminy: At least one field is required to compute the available charts.');
 	      }
 	
 	      for (var i = 0, j = this._charts.length; i < j; i++) {
@@ -828,7 +828,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _classCallCheck(this, Chart);
 	
 	    if (!config || !config.hasOwnProperty('name') || !config.hasOwnProperty('acceptedStatTypes')) {
-	      throw new Error('Charts must be instanciated with a correct ' + 'configuration ie. with a name and a list of accepted statistical ' + 'types.');
+	      throw new Error('Jiminy: Charts must be instanciated with a correct ' + 'configuration ie. with a name and a list of accepted statistical ' + 'types.');
 	    } else {
 	      this._name = config.name;
 	      this._acceptedStatTypes = config.acceptedStatTypes;

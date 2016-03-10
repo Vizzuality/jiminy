@@ -5,7 +5,7 @@ export default class Chart {
   constructor(config) {
     if(!config || !config.hasOwnProperty('name') ||
       !config.hasOwnProperty('acceptedStatTypes')) {
-      throw new Error('Charts must be instanciated with a correct ' +
+      throw new Error('Jiminy: Charts must be instanciated with a correct ' +
        'configuration ie. with a name and a list of accepted statistical ' +
        'types.');
     } else {
