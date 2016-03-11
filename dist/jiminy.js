@@ -79,11 +79,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var Jiminy = function () {
-	  function Jiminy(json) {
+	  function Jiminy(json, chartConfig) {
 	    _classCallCheck(this, Jiminy);
 	
 	    this._dataset = new _dataset2.default(json);
 	    this._fields = new _fields2.default(this._dataset);
+	    this._charts = new _charts2.default(chartConfig);
 	  }
 	
 	  _createClass(Jiminy, [{
@@ -114,7 +115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        allInclusive: allColumnsInclusive
 	      };
 	
-	      this._availableCharts = new _charts2.default().getAvailable(fields, options);
+	      this._availableCharts = this._charts.getAvailable(fields, options);
 	      return this._availableCharts.map(function (chart) {
 	        return chart.name;
 	      });
@@ -130,7 +131,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        throw new Error('Jiminy: columns expects the name of the chart as first argument.');
 	      }
 	
-	      var chart = new _charts2.default().getChart(chartName);
+	      var chart = this._charts.getChart(chartName);
 	
 	      if (!chart) {
 	        throw new Error(chartName + ' isn\'t a valid chart name. ' + 'Check the documentation to see existing types of charts.');
@@ -657,11 +658,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return o.constructor && o.constructor === this.constructor && o.name === this._name;
 	    }
 	  }, {
-	    key: 'types',
-	    get: function get() {
-	      return this._types;
-	    }
-	  }, {
 	    key: 'name',
 	    get: function get() {
 	      return this._name;
@@ -685,6 +681,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'isTemporal',
 	    get: function get() {
 	      return this._name === this._types[3];
+	    }
+	  }], [{
+	    key: 'types',
+	    get: function get() {
+	      return TYPES;
 	    }
 	  }]);
 	
@@ -710,35 +711,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _chart2 = _interopRequireDefault(_chart);
 	
+	var _stattype = __webpack_require__(7);
+	
+	var _stattype2 = _interopRequireDefault(_stattype);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var CONFIG = [{
-	  name: 'bar',
-	  acceptedStatTypes: [['nominal'], ['ordinal'], ['quantitative', 'nominal'], ['quantitative', 'temporal'], ['quantitative', 'ordinal']]
-	}, {
-	  name: 'line',
-	  acceptedStatTypes: [['quantitative', 'temporal'], ['quantitative', 'ordinal']]
-	}, {
-	  name: 'pie',
-	  acceptedStatTypes: [['nominal'], ['ordinal']]
-	}, {
-	  name: 'scatter',
-	  acceptedStatTypes: [['quantitative', 'quantitative'], ['nominal', 'nominal'], ['nominal', 'ordinal'], ['ordinal', 'ordinal']]
-	}, {
-	  name: '1d_scatter',
-	  acceptedStatTypes: [['quantitative'], ['temporal']]
-	}, {
-	  name: '1d_tick',
-	  acceptedStatTypes: [['quantitative'], ['temporal']]
-	}];
-	
 	var Charts = function () {
-	  function Charts() {
+	  function Charts(config) {
 	    _classCallCheck(this, Charts);
 	
-	    this._config = CONFIG;
+	    if (!config || !Array.isArray(config) || !config.length) {
+	      throw new Error('Jiminy: You must pass a non-empty chart configuration.');
+	    }
+	
+	    this._config = this._parseConfig(config);
 	    this._charts = this._createCharts();
 	  }
 	
@@ -752,6 +741,87 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      for (var i = 0, j = this._config.length; i < j; i++) {
 	        charts.push(new _chart2.default(this._config[i]));
+	      }
+	
+	      return charts;
+	    }
+	
+	    /* This method is tested within the constructor */
+	
+	  }, {
+	    key: '_parseConfig',
+	    value: function _parseConfig(config) {
+	      var charts = [];
+	
+	      var _loop = function _loop(i, j) {
+	        var chartConfig = config[i];
+	
+	        if (!chartConfig.name || typeof chartConfig.name !== 'string' || !chartConfig.name.length) {
+	          console.warn('Jiminy: Each chart must have a name.');
+	          return 'continue';
+	        }
+	
+	        if (!chartConfig.acceptedStatTypes || !Array.isArray(chartConfig.acceptedStatTypes) || !chartConfig.acceptedStatTypes.length) {
+	          console.warn('Jiminy: Each chart must have a set of rules.');
+	          return 'continue';
+	        }
+	
+	        var rules = [];
+	
+	        for (var k = 0, l = chartConfig.acceptedStatTypes.length; k < l; k++) {
+	          var rule = chartConfig.acceptedStatTypes[k];
+	
+	          if (!rule || !Array.isArray(rule) || !rule.length) {
+	            console.warn('Jiminy: A rule for chart "' + chartConfig.name + '" ' + 'has been ignored because invalid.');
+	            continue;
+	          }
+	
+	          if (rule.length > 2) {
+	            console.warn('Jiminy: A rule for chart "' + chartConfig.name + '" ' + 'has been ignored because it owns more than two statistical ' + 'types.');
+	            continue;
+	          }
+	
+	          var validStatTypes = 0;
+	
+	          for (var m = 0, n = rule.length; m < n; m++) {
+	            if (typeof rule[m] !== 'string' || ! ~_stattype2.default.types.indexOf(rule[m])) {
+	              console.warn('Jiminy: A rule for chart "' + chartConfig.name + '" ' + 'has been ignored because a statistical type isn\'t valid.');
+	              continue;
+	            }
+	
+	            validStatTypes++;
+	          }
+	
+	          if (validStatTypes === rule.length) {
+	            rules.push(rule.slice(0));
+	          }
+	        }
+	
+	        /* We tag the chart as valid if this code has been reached and at least
+	         * one statistical rule is valid */
+	        if (rules.length > 0) {
+	          if (charts.filter(function (chart) {
+	            return chart.name === chartConfig.name;
+	          }).length) {
+	            console.warn('Jiminy: A chart has been ignored because it ' + ('already exists another with name "' + chartConfig.name + '".'));
+	            return 'continue';
+	          }
+	
+	          charts.push({
+	            name: chartConfig.name,
+	            acceptedStatTypes: rules
+	          });
+	        }
+	      };
+	
+	      for (var i = 0, j = config.length; i < j; i++) {
+	        var _ret = _loop(i, j);
+	
+	        if (_ret === 'continue') continue;
+	      }
+	
+	      if (!charts.length) {
+	        throw new Error('Jiminy: The chart configuration is empty or malformed.');
 	      }
 	
 	      return charts;

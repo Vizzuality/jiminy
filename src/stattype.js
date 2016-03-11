@@ -17,7 +17,7 @@ export default class StatType {
     }
   }
 
-  get types() { return this._types; }
+  static get types() { return TYPES; }
   get name() { return this._name; }
 
   get isQuantitative() { return this._name === this._types[0]; }

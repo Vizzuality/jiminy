@@ -11,7 +11,9 @@ describe('Jiminy', function() {
     let data = [
       { name: 'Vizzuality' }
     ];
-    let jiminy = new Jiminy(data);
+    let jiminy = new Jiminy(data, [
+      { name: 'bar', acceptedStatTypes: [['nominal']] }
+    ]);
 
     it('should not throw any error if no argument or null or undefined', () => {
       expect(() => { return jiminy.recommendation(); }).to.not.throw(Error);
@@ -44,6 +46,56 @@ describe('Jiminy', function() {
   });
 
   describe('#columns', () => {
+    const chartConfig = [
+      {
+        name: 'bar',
+        acceptedStatTypes: [
+          [ 'nominal' ],
+          [ 'ordinal' ],
+          [ 'quantitative', 'nominal' ],
+          [ 'quantitative', 'temporal' ],
+          [ 'quantitative', 'ordinal' ]
+        ]
+      },
+      {
+        name: 'line',
+        acceptedStatTypes: [
+          [ 'quantitative', 'temporal' ],
+          [ 'quantitative', 'ordinal' ]
+        ]
+      },
+      {
+        name: 'pie',
+        acceptedStatTypes: [
+          [ 'nominal' ],
+          [ 'ordinal' ]
+        ]
+      },
+      {
+        name: 'scatter',
+        acceptedStatTypes: [
+          [ 'quantitative', 'quantitative' ],
+          [ 'nominal', 'nominal' ],
+          [ 'nominal', 'ordinal' ],
+          [ 'ordinal', 'ordinal' ]
+        ]
+      },
+      {
+        name: '1d_scatter',
+        acceptedStatTypes: [
+          [ 'quantitative' ],
+          [ 'temporal' ]
+        ]
+      },
+      {
+        name: '1d_tick',
+        acceptedStatTypes: [
+          [ 'quantitative' ],
+          [ 'temporal' ]
+        ]
+      }
+    ];
+
     let data = [
       { name: 'Vizzuality' }
     ];
@@ -53,9 +105,9 @@ describe('Jiminy', function() {
     let data3 = [
       { name: 'Vizzuality',  work: 'engineer', level: 1 }
     ];
-    let jiminy = new Jiminy(data);
-    let jiminy2 = new Jiminy(data2);
-    let jiminy3 = new Jiminy(data3);
+    let jiminy = new Jiminy(data, chartConfig);
+    let jiminy2 = new Jiminy(data2, chartConfig);
+    let jiminy3 = new Jiminy(data3, chartConfig);
 
     it('should throw an error if no argument or null or undefined or not a string', () => {
       expect(() => { return jiminy.columns(); }).to.throw(Error);

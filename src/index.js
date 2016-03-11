@@ -6,9 +6,10 @@ import Charts from 'charts';
 
 export default class Jiminy {
 
-  constructor(json) {
+  constructor(json, chartConfig) {
     this._dataset = new Dataset(json);
     this._fields = new Fields(this._dataset);
+    this._charts = new Charts(chartConfig);
   }
 
   get name()    { return 'Jiminy'; }
@@ -39,7 +40,7 @@ export default class Jiminy {
       allInclusive: allColumnsInclusive
     };
 
-    this._availableCharts = new Charts().getAvailable(fields, options);
+    this._availableCharts = this._charts.getAvailable(fields, options);
     return this._availableCharts.map(function(chart) {
       return chart.name;
     });
@@ -52,7 +53,7 @@ export default class Jiminy {
       throw new Error('Jiminy: columns expects the name of the chart as first argument.');
     }
 
-    const chart = new Charts().getChart(chartName);
+    const chart = this._charts.getChart(chartName);
 
     if(!chart) {
       throw new Error(`${chartName} isn't a valid chart name. ` +
