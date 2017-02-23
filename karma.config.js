@@ -1,7 +1,8 @@
 // Karma configuration
 // Generated on Mon Feb 29 2016 18:50:02 GMT+0100 (CET)
+const webpackConfig = require('./webpack.config.js');
 
-module.exports = function(config) {
+module.exports = function karmaConfig(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -9,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: [ 'mocha', 'chai' ],
+    frameworks: ['mocha', 'chai'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -25,11 +26,11 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/*.js': [ 'webpack' ],
-      'test/*.spec.js': [ 'webpack' ]
+      'src/*.js': ['webpack'],
+      'test/*.spec.js': ['webpack']
     },
 
-    webpack: require('./webpack.config.js'),
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       // webpack-dev-middleware configuration
@@ -57,7 +58,8 @@ module.exports = function(config) {
     colors: true,
 
     // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    // possible values: config.LOG_DISABLE || config.LOG_ERROR ||
+    // config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
     // enable / disable watching file and executing tests whenever any file changes
@@ -76,7 +78,7 @@ module.exports = function(config) {
     concurrency: Infinity,
 
     customLaunchers: {
-      'PhantomJS_custom': {
+      PhantomJS_custom: {
         base: 'PhantomJS',
         options: {},
         debug: false
@@ -84,7 +86,8 @@ module.exports = function(config) {
     },
 
     phantomjsLauncher: {
-      // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
+      // Have phantomjs exit if a ResourceError is encountered
+      // (useful if karma exits without killing phantom)
       exitOnResourceError: true
     }
   });

@@ -1,18 +1,15 @@
-var path = require('path');
+const path = require('path');
 
-var inputFile  = 'index.js';
-var outputFile = 'jiminy.js';
-var config = {};
-var plugins = [];
+const inputFile = 'index.js';
+let outputFile = 'jiminy.js';
 
-if(process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   outputFile = 'jiminy.min.js';
 }
 
-config = {
+const config = {
   context: __dirname,
-  entry: './src/' + inputFile,
-  devtool: process.env.NODE_ENV === 'development' ? 'source-map' : '',
+  entry: `./src/${inputFile}`,
   output: {
     path: './dist',
     filename: outputFile,
@@ -25,16 +22,11 @@ config = {
         test: /(\.js)$/,
         loader: 'babel',
         exclude: /(node_modules|bower_components)/
-      },
-      {
-        test: /(\.js)$/,
-        loader: 'eslint-loader',
-        exclude: /node_modules/
       }
     ]
   },
   resolve: {
-    root: [ './src', './test' ],
+    root: ['./src', './test'],
     extensions: ['', '.js']
   },
   resolveLoader: {
@@ -47,8 +39,11 @@ config = {
       commonjs: 'datalib',
       amd: 'datalib'
     }
-  },
-  plugins: plugins
+  }
 };
+
+if (process.env.NODE_ENV !== 'production') {
+  config.devtool = 'source-map';
+}
 
 module.exports = config;

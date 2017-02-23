@@ -1,11 +1,11 @@
-'use strict';
+
 
 import Field from 'field';
 
 export default class Fields {
 
   constructor(dataset) {
-    if(!dataset || !dataset.valid) {
+    if (!dataset || !dataset.valid) {
       throw new Error('Jiminy: Fields expects a valid dataset');
     } else {
       this._fields = this.computeFields(dataset);
@@ -16,10 +16,10 @@ export default class Fields {
 
   /* Return the fields of the dataset */
   computeFields(dataset) {
-    let columnNames = dataset.getColumnNames();
-    let fields = [];
+    const columnNames = dataset.getColumnNames();
+    const fields = [];
 
-    for(let i = 0, j = columnNames.length; i < j; i++) {
+    for (let i = 0, j = columnNames.length; i < j; i++) {
       fields.push(new Field(columnNames[i], dataset));
     }
 
@@ -30,13 +30,13 @@ export default class Fields {
    * emit a warning in the console. If no one can be found, return an empty
    * array. */
   get(fieldNames) {
-    let fields = [];
+    const fields = [];
 
-    for(let i = 0, j = fieldNames.length; i < j; i++) {
-      let fieldName = fieldNames[i];
-      let field = this._getField(fieldName);
+    for (let i = 0, j = fieldNames.length; i < j; i++) {
+      const fieldName = fieldNames[i];
+      const field = this._getField(fieldName);
 
-      if(field) fields.push(field);
+      if (field) fields.push(field);
       else console.warn(`Jiminy: Unable to find the column "${fieldName}" inside the dataset.`);
     }
 
@@ -46,8 +46,8 @@ export default class Fields {
   /* Return the field matching the name passed as argument if exist, null
    * otherwise */
   _getField(fieldName) {
-    for(let i = 0, j = this._fields.length; i < j; i++) {
-      if(this.fields[i].name === fieldName) {
+    for (let i = 0, j = this._fields.length; i < j; i++) {
+      if (this.fields[i].name === fieldName) {
         return this._fields[i];
       }
     }
@@ -55,4 +55,4 @@ export default class Fields {
     return null;
   }
 
-};
+}
