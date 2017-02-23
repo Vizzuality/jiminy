@@ -13,7 +13,7 @@ export default class Jiminy {
   }
 
   get name() { return 'Jiminy'; }
-  get version() { return '0.1.0'; }
+  get version() { return '0.1.1'; }
 
   /* If fieldNames is present, only return the charts that can be obtained by
    * the combination of the passed column names. Otherwise, return the types of
