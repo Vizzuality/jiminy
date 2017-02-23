@@ -1,4 +1,4 @@
-'use strict';
+
 
 import chai from 'chai';
 import Dataset from 'dataset';
@@ -7,23 +7,21 @@ import Fields from 'fields';
 
 const expect = chai.expect;
 
-describe('Fields', function() {
-
+describe('Fields', () => {
   describe('#constructor', () => {
-    let dataset = new Dataset([ { name: 'Vizzuality', type: 'company' } ]);
+    const dataset = new Dataset([{ name: 'Vizzuality', type: 'company' }]);
 
     it('should throw an error if no argument', () => {
-      expect(() => { return new Fields(); }).to.throw(Error);
+      expect(() => new Fields()).to.throw(Error);
     });
 
     it('should not throw an error if valid dataset as argument', () => {
-      expect(() => { return new Fields(dataset); }).to.not.throw(Error);
+      expect(() => new Fields(dataset)).to.not.throw(Error);
     });
-
   });
 
   describe('#computeFields', () => {
-    let dataset = new Dataset([ { name: 'Vizzuality', type: 'company' } ]);
+    const dataset = new Dataset([{ name: 'Vizzuality', type: 'company' }]);
     let fields;
 
     before(() => {
@@ -31,7 +29,7 @@ describe('Fields', function() {
     });
 
     it('should return an array of instances of Field', () => {
-      let areInstanceOfField = fields.computeFields(dataset).reduce((res, field) => {
+      const areInstanceOfField = fields.computeFields(dataset).reduce((res, field) => {
         res = res || field instanceof Field;
         return res;
       }, false);
@@ -42,11 +40,10 @@ describe('Fields', function() {
     it('should return an array of length equal to the columns number', () => {
       expect(fields.computeFields(dataset)).to.have.lengthOf(2);
     });
-
   });
 
   describe('#get', () => {
-    let dataset = new Dataset([ { name: 'Vizzuality', active: true } ]);
+    const dataset = new Dataset([{ name: 'Vizzuality', active: true }]);
     let fields;
 
     before(() => {
@@ -61,11 +58,10 @@ describe('Fields', function() {
     it('should return an empty array if no field could be found', () => {
       expect(fields.get(['age'])).to.deep.equal([]);
     });
-
   });
 
   describe('#_getField', () => {
-    let dataset = new Dataset([ { name: 'Vizzuality', active: true } ]);
+    const dataset = new Dataset([{ name: 'Vizzuality', active: true }]);
     let fields;
 
     before(() => {
@@ -79,7 +75,5 @@ describe('Fields', function() {
     it('should return an null if no field could be found', () => {
       expect(fields._getField('age')).to.deep.equal(null);
     });
-
   });
-
 });
