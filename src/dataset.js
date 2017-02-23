@@ -1,12 +1,12 @@
-'use strict';
+
 
 import utils from 'utils';
 
-export default class Dataset  {
+export default class Dataset {
 
   constructor(dataset) {
     this._data = dataset;
-    if(!this.valid) {
+    if (!this.valid) {
       throw new Error('Jiminy: The dataset must be a non-empty array.');
     }
   }
@@ -19,23 +19,23 @@ export default class Dataset  {
 
   /* Return the first valid value of the column named fieldName */
   getFirstValidValue(fieldName) {
-    for(let i = 0, j = this._data.length; i < j; i++) {
-      let value = this._data[i][fieldName];
+    for (let i = 0, j = this._data.length; i < j; i++) {
+      const value = this._data[i][fieldName];
 
-      if(this._validValue(value)) return value;
+      if (this._validValue(value)) return value;
     }
     return null;
   }
 
   /* Return true if the column contains at least 5 different valid values */
   atLeast5DistinctValues(fieldName) {
-    let values = [];
+    const values = [];
 
-    for(let i = 0, j = this._data.length; i < j; i++) {
-      let value = this._data[i][fieldName];
+    for (let i = 0, j = this._data.length; i < j; i++) {
+      const value = this._data[i][fieldName];
 
-      if(this._validValue(value) && !~values.indexOf(value)) values.push(value);
-      if(values.length >= 5) return true;
+      if (this._validValue(value) && !~values.indexOf(value)) values.push(value);
+      if (values.length >= 5) return true;
     }
 
     return false;
@@ -43,10 +43,10 @@ export default class Dataset  {
 
   /* Return the name of the columns from the first row */
   getColumnNames() {
-    let row = this._data[0];
-    let columns = [];
+    const row = this._data[0];
+    const columns = [];
 
-    for(let column in row) {
+    for (const column in row) {
       columns.push(column);
     }
 

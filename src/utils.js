@@ -1,4 +1,4 @@
-'use strict';
+
 
 export default {
 
@@ -6,7 +6,7 @@ export default {
    * See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
    */
   isNaN(value) {
-    if(Number.isNaN) {
+    if (Number.isNaN) {
       return Number.isNaN(value);
     }
 

@@ -1,4 +1,4 @@
-'use strict';
+
 
 import chai from 'chai';
 import Dataset from 'dataset';
@@ -6,10 +6,8 @@ import Type from 'type';
 
 const expect = chai.expect;
 
-describe('Type', function() {
-
+describe('Type', () => {
   describe('#constructor', () => {
-
     it('should throw an error when no argument', () => {
       expect(() => { new Type(); }).to.throw(Error);
     });
@@ -19,37 +17,35 @@ describe('Type', function() {
     });
 
     it('should throw an error when passing a name but an empty dataset', () => {
-      expect(() => { new new Type('name', new Dataset([])); }).to.throw(Error);
+      expect(() => { new new Type('name', new Dataset([]))(); }).to.throw(Error);
     });
 
     it('should not throw an error when passing a name and a valid dataset', () => {
-      let dataset = new Dataset([ { name: 'Vizzuality'} ]);
+      const dataset = new Dataset([{ name: 'Vizzuality' }]);
 
       expect(() => { new Type('name', dataset); }).to.not.throw(Error);
     });
-
   });
 
   describe('#_inferType', () => {
-
     it('should return "string" when the column hasn\'t been found', () => {
-      let fieldName = 'name';
-      let dataset = new Dataset([ { location: 'Madrid' } ]);
-      let type = new Type(fieldName, dataset);
+      const fieldName = 'name';
+      const dataset = new Dataset([{ location: 'Madrid' }]);
+      const type = new Type(fieldName, dataset);
 
       expect(type._inferType(fieldName, dataset)).to.equal('string');
     });
 
     it('should return "string" when no valid value', () => {
-      let fieldName = 'name';
-      let dataset = new Dataset([ { fieldName: null } ]);
-      let type = new Type(fieldName, dataset);
+      const fieldName = 'name';
+      const dataset = new Dataset([{ fieldName: null }]);
+      const type = new Type(fieldName, dataset);
 
       expect(type._inferType(fieldName, dataset)).to.equal('string');
     });
 
     it('should return the right type', () => {
-      let tests = {
+      const tests = {
         string: 'Vizzuality',
         number: 3.4,
         integer: 2,
@@ -57,21 +53,20 @@ describe('Type', function() {
         boolean: false
       };
 
-      for(let key in tests) {
-        let dataset = new Dataset([ { name: tests[key] } ]);
-        let type = new Type('name', dataset);
+      for (const key in tests) {
+        const dataset = new Dataset([{ name: tests[key] }]);
+        const type = new Type('name', dataset);
 
         expect(type._inferType('name', dataset)).to.equal(key);
       }
     });
-
   });
 
   describe('#_validValue', () => {
     let type;
 
     before(() => {
-      type = new Type('name', new Dataset([ { name: 'Vizzuality' } ]));
+      type = new Type('name', new Dataset([{ name: 'Vizzuality' }]));
     });
 
     it('should return false when the argument is null', () => {
@@ -85,14 +80,13 @@ describe('Type', function() {
     it('should return false when the argument is NaN', () => {
       expect(type._validValue(NaN)).to.be.false;
     });
-
   });
 
   describe('#equals', () => {
     let type;
 
     before(() => {
-      type = new Type('name', new Dataset([ { name: 'Vizzuality' } ]));
+      type = new Type('name', new Dataset([{ name: 'Vizzuality' }]));
     });
 
     it('should return false if the JS types are different', () => {
@@ -100,7 +94,7 @@ describe('Type', function() {
     });
 
     it('should return false if the types are different', () => {
-      let type2 = new Type('age', new Dataset([ { age: 8 } ]));
+      const type2 = new Type('age', new Dataset([{ age: 8 }]));
 
       expect(type.equals(type2)).to.be.false;
     });
@@ -108,37 +102,33 @@ describe('Type', function() {
     it('should return true if the types are the same', () => {
       expect(type.equals(type)).to.be.true;
     });
-
   });
 
   describe('#getters', () => {
-    let tests = [
-      [ 'string', 'Vizzuality' ],
-      [ 'number', 3.4 ],
-      [ 'integer', 2 ],
-      [ 'date', '5/5/2015' ],
-      [ 'boolean', false ]
+    const tests = [
+      ['string', 'Vizzuality'],
+      ['number', 3.4],
+      ['integer', 2],
+      ['date', '5/5/2015'],
+      ['boolean', false]
     ];
 
-    for(let i = 0, j = tests.length; i < j; i++) {
-      let test = tests[i];
-      let method = 'is' + (test[0])[0].toUpperCase() + test[0].slice(1, test[0].length);
+    for (let i = 0, j = tests.length; i < j; i++) {
+      const test = tests[i];
+      const method = `is${(test[0])[0].toUpperCase()}${test[0].slice(1, test[0].length)}`;
 
       it(`${method} should return true only if the type corresponds`, () => {
-        for(let k = 0, l = tests.length; k < l; k++) {
-          let dataset = new Dataset([ { name: tests[k][1] } ]);
-          let type = new Type('name', dataset);
+        for (let k = 0, l = tests.length; k < l; k++) {
+          const dataset = new Dataset([{ name: tests[k][1] }]);
+          const type = new Type('name', dataset);
 
-          if(k === i) {
+          if (k === i) {
             expect(type[method]).to.be.true;
           } else {
             expect(type[method]).to.be.false;
           }
         }
       });
-
     }
-
   });
-
 });

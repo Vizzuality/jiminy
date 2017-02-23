@@ -1,9 +1,9 @@
-'use strict';
+
 
 export default class Chart {
 
   constructor(config) {
-    if(!config || !config.hasOwnProperty('name') ||
+    if (!config || !config.hasOwnProperty('name') ||
       !config.hasOwnProperty('acceptedStatTypes')) {
       throw new Error('Jiminy: Charts must be instanciated with a correct ' +
        'configuration ie. with a name and a list of accepted statistical ' +
@@ -28,19 +28,19 @@ export default class Chart {
 
     options = options || {};
 
-    for(let i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
-      let condition = this._acceptedStatTypes[i];
+    for (let i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
+      const condition = this._acceptedStatTypes[i];
 
-      if(options.allInclusive && condition.length !== fields.length) continue;
+      if (options.allInclusive && condition.length !== fields.length) continue;
 
       /* If the requirement is just one statistical type  */
-      if(condition.length === 1) {
+      if (condition.length === 1) {
         available = this._existFields(fields, condition[0], 1) &&
           (!options.allInclusive || options.allInclusive &&
           !this._existFields(fields, condition[0], 2));
       } else {
         /* If the requirement are two same statistical types */
-        if(condition[0] === condition[1]) {
+        if (condition[0] === condition[1]) {
           available = this._existFields(fields, condition[0], 2) &&
             (!options.allInclusive || options.allInclusive &&
             !this._existFields(fields, condition[0], 3));
@@ -55,7 +55,7 @@ export default class Chart {
         }
       }
 
-      if(available) break;
+      if (available) break;
     }
 
     return available;
@@ -70,9 +70,7 @@ export default class Chart {
   /* Return true if among the fields, there are at least count ones of the
    * specified statistical type */
   _existFields(fields, statTypeName, count) {
-    return fields.filter(function(field) {
-      return field.statType['is' + this._capitalize(statTypeName)];
-    }.bind(this)).length >= count;
+    return fields.filter(field => field.statType[`is${this._capitalize(statTypeName)}`]).length >= count;
   }
 
   /* Return among the passed fields, the ones that can be used to compute the
@@ -86,38 +84,33 @@ export default class Chart {
     return fields.filter((field) => {
       let isUseful = false;
 
-      for(let i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
+      for (let i = 0, j = this._acceptedStatTypes.length; i < j; i++) {
         const acceptedStatType = this._acceptedStatTypes[i];
 
-        if(acceptedStatType.length === 1) {
+        if (acceptedStatType.length === 1) {
           isUseful = !selectedField &&
             acceptedStatType[0] === field.statType.name;
-        } else {
-          if(acceptedStatType[0] === acceptedStatType[1]) {
-            isUseful = acceptedStatType[0] === field.statType.name &&
+        } else if (acceptedStatType[0] === acceptedStatType[1]) {
+          isUseful = acceptedStatType[0] === field.statType.name &&
               this._existFields(fields, acceptedStatType[0], 2) &&
               (!selectedField || selectedField &&
               selectedField.name !== field.name);
-          } else {
-            if(!selectedField) {
-              isUseful = acceptedStatType[0] === field.statType.name &&
+        } else if (!selectedField) {
+          isUseful = acceptedStatType[0] === field.statType.name &&
                 this._existFields(fields, acceptedStatType[1], 1);
-            } else {
-              isUseful = (acceptedStatType[0] === field.statType.name &&
+        } else {
+          isUseful = (acceptedStatType[0] === field.statType.name &&
                 this._existFields(fields, acceptedStatType[1], 1) &&
                 selectedField.statType.name === acceptedStatType[1] ||
                 acceptedStatType[1] === field.statType.name &&
                 this._existFields(fields, acceptedStatType[0], 1) &&
                 selectedField.statType.name === acceptedStatType[0]);
-            }
-          }
         }
 
-        if(isUseful) break;
+        if (isUseful) break;
       }
 
       return isUseful;
-
     });
   }
 
@@ -127,4 +120,4 @@ export default class Chart {
       o.acceptedStatTypes === this._acceptedStatTypes;
   }
 
-};
+}

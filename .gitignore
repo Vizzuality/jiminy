@@ -1,2 +1,15 @@
+# Mac OS
 .DS_Store
-node_modules/
+
+# Text editors
+*.sublime*
+.sublime*
+
+# Vendors
+/node_modules
+
+# Logs
+*.log*
+
+# Compiled
+/dist
